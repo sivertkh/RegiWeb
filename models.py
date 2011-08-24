@@ -34,7 +34,7 @@ ARBEIDSTYPE = (
 AKTIVSTATUS = (
     ('A', 'Aktiv'),
     ('H', 'Halvaktiv'),
-    ('I', 'Innaktiv'),
+    ('I', 'Inaktiv'),
 ) 
 
 BETALINGSSTATUS = (
