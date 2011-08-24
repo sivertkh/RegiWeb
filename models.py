@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 UTSTYRSTYPE = (
     ('S', 'Lys'),
@@ -84,15 +85,14 @@ class Booking(models.Model):
     
 
 class Person(models.Model):
-    navn = models.CharField(max_length=50)
-    epost = models.EmailField(max_length=50)
+    user = models.OneToOneField(User)
     tlf = models.CharField(max_length=15)
     aktivstatus = models.CharField(max_length=1, choices=AKTIVSTATUS)
     beskrivelse = models.TextField
     regiInntreden = models.IntegerField()
 
     def __unicode__(self):
-        return self.navn
+        return self.user.first_name + " " + self.user.last_name
 
 class Arbeid(models.Model):
     booking = models.ForeignKey(Booking)
