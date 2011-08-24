@@ -1,6 +1,6 @@
 from django.db import models
 
-TYPE = (
+UTSTYRSTYPE = (
     ('S', 'Lys'),
     ('D', 'Lyd'),
     ('A', 'Annet'),
@@ -18,26 +18,26 @@ STATUS = (
     ('K', 'Kassert'),
 )
 
-FSTATUS = (
+FAKTURASTATUS = (
     ('U', 'Ufakturert'),
     ('F', 'Fakturert'),
     ('B', 'Betalt'),
 )
 
-ATYPE = (
+ARBEIDSTYPE = (
     ('R', 'Rigg'),
     ('L', 'Lystekniker'),
     ('S', 'Lydtekniker'),
     ('A', 'Annet'),
 )
 
-ASTATUS = (
+AKTIVSTATUS = (
     ('A', 'Aktiv'),
     ('H', 'Halvaktiv'),
     ('I', 'Innaktiv'),
 ) 
 
-BSTATUS = (
+BETALINGSSTATUS = (
     ('I', 'Ikke registrert'),
     ('R', 'Registrert i SPF'),
     ('M', 'Mangler SPF'),
@@ -46,8 +46,8 @@ BSTATUS = (
 
 class Utstyr(models.Model):
     navn = models.CharField(max_length=100)
-    uType = models.CharField(max_length=1, choices=TYPE)
-    plasering = models.CharField(max_length=1, choices=PLASSERING)
+    utstyrstype = models.CharField(max_length=1, choices=UTSTYRSTYPE)
+    plassering = models.CharField(max_length=1, choices=PLASSERING)
     status = models.CharField(max_length=1, choices=STATUS)
     effekt = models.IntegerField()
     innkjopsdato = models.DateField()
@@ -61,22 +61,23 @@ class Utstyr(models.Model):
 class Kunde(models.Model):
     navn = models.CharField(max_length=100)
     tlfNr = models.CharField(max_length=15)
-    email = models.CharField(max_length=100)
-    fakturaddr = models.CharField(max_length=200)
-    beskrivelse = models.CharField(max_length=100)
+    epost = models.EmailField(max_length=100)
+    fakturaddr = models.TextField()
+    beskrivelse = models.TextField()
 
     def __unicode__(self):
         return self.navn 
 
 class Booking(models.Model):
-    beskrivelse = models.CharField(max_length=100)
+    beskrivelse = models.TextField()
     utDato = models.DateField()
     innDato = models.DateField()
     kunde = models.ForeignKey(Kunde)
     utstyr = models.ManyToManyField(Utstyr)
-    pris = models.IntegerField()
-    fakturaStatus = models.CharField(max_length=1, choices=FSTATUS)
-    fakturaNr = models.CharField(max_length=10)
+    pris = models.DecimalField(max_digits=2) 
+    fakturastatus = models.CharField(max_length=1, choices=FAKTURASTATUS)
+    fakturasato = models.DateField()
+    fakturanr = models.CharField(max_length=10)
 
     def __unicode__(self):
         return self.beskrivelse
@@ -84,10 +85,10 @@ class Booking(models.Model):
 
 class Person(models.Model):
     navn = models.CharField(max_length=50)
-    epost = models.CharField(max_length=50)
+    epost = models.EmailField(max_length=50)
     tlf = models.CharField(max_length=15)
-    aktivStatus = models.CharField(max_length=1, choices=ASTATUS)
-    beskrivelse = models.CharField(max_length=500)
+    aktivstatus = models.CharField(max_length=1, choices=AKTIVSTATUS)
+    beskrivelse = models.TextField
     regiInntreden = models.IntegerField()
 
     def __unicode__(self):
@@ -96,9 +97,9 @@ class Person(models.Model):
 class Arbeid(models.Model):
     booking = models.ForeignKey(Booking)
     person = models.ForeignKey(Person)
-    sats = models.IntegerField()
-    arbeidsType = models.CharField(max_length=1, choices=ATYPE)
-    betalStatus = models.CharField(max_length=1, choices=BSTATUS)
+    sats = models.DecimalField(max_digits=2)
+    arbeidstype = models.CharField(max_length=1, choices=ARBEIDSTYPE)
+    betalstatus = models.CharField(max_length=1, choices=BETALINGSSTATUS)
         
     def __unicode__(self):
         return self.navn
