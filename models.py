@@ -77,7 +77,7 @@ class Booking(models.Model):
     utstyr = models.ManyToManyField(Utstyr)
     pris = models.DecimalField(max_digits=2) 
     fakturastatus = models.CharField(max_length=1, choices=FAKTURASTATUS)
-    fakturasato = models.DateField()
+    fakturadato = models.DateField()
     fakturanr = models.CharField(max_length=10)
 
     def __unicode__(self):
